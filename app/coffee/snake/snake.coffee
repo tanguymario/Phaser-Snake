@@ -17,5 +17,10 @@ class Snake
     @grid = grid
     @players = players
 
+    playerStartLength = 3
+
+    for player in @players
+      player.setRandomlyInGrid playerStartLength
+
 
 module.exports = Snake
