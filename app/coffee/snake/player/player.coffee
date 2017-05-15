@@ -4,6 +4,7 @@ debug       = require '../../utils/debug.coffee'
 debugThemes = require '../../utils/debug-themes.coffee'
 
 Direction = require '../../utils/direction.coffee'
+DirectionUtils = require '../../utils/direction-utils.coffee'
 
 PlayerSprites = require './player-sprites.coffee'
 
@@ -11,12 +12,13 @@ class Player
   @V_DIRECTIONS = [Direction.W, Direction.N, Direction.E, Direction.S]
   @V_MIN_LENGTH = 2
 
-  constructor: (game, grid) ->
+  constructor: (game, grid, playerTheme) ->
     assert game?, "Game missing"
     assert grid?, "Grid missing"
 
     @game = game
     @grid = grid
+    @theme = playerTheme
 
 
   setRandomlyInGrid: (length) ->
@@ -49,11 +51,54 @@ class Player
     @headCase = rndCase
     @path = path
 
-    @draw()
+    console.log @headCase
+    console.log @path
+
+    @createSprites()
+
+
+  isInitialized: ->
+    return @headCase? and @path?
+
+
+  createSprites: ->
+    assert @headCase? and @path?, "Head Case / path missing"
+
+    @sprites = new Array @path.length
+
+    currentCase = @headCase
+
+    # Head
+    index = 0
+    direction = @path[index]
+    @sprites[index] = @game.add.sprite currentCase.sprite.x, currentCase.sprite.y, @theme.key, PlayerSprites.head[direction]
+
+    bodyLength = @path.length - 1
+    for index in [1...bodyLength] by 1
+      direction = @path[index]
+      nextDirection = @path[index + 1]
+      currentCase = currentCase.getNeighbourAt nextDirection
+      
+      spriteFrame = PlayerSprites.body[direction][nextDirection]
+      console.log currentCase
+      @sprites[index] = @game.add.sprite currentCase.sprite.x, currentCase.sprite.y, @theme.key, spriteFrame
+
+    oppositeDirection = DirectionUtils.getOpposite direction
+    currentCase = currentCase.getNeighbourAt oppositeDirection
+    direction = @path[bodyLength]
+    @sprites[bodyLength] = @game.add.sprite currentCase.sprite.x, currentCase.sprite.y, @theme.key, PlayerSprites.tail[direction]
+
+    for sprite in @sprites
+      if not sprite?
+        continue
+
+      sprite.anchor.setTo 0.5, 0.5
+
+      # scaleFactor = (currentCase.width / sprite.width) + (currentCase.height / sprite.height) / 2
+      # sprite.scale.setTo scaleFactor
 
 
   draw: ->
-
 
 
   moveLeft: ->

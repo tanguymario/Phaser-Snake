@@ -1,15 +1,39 @@
+Direction = require '../../utils/direction.coffee'
+
+W = Direction.W
+N = Direction.N
+E = Direction.E
+S = Direction.S
+
 module.exports =
-  HL: 12 # Head Left
-  HT: 5  # Head Top
-  HR: 6  # ...
-  HB: 13
-  TL: 4  # Tail Left
-  TT: 11 # Tail Top
-  TR: 10 # ...
-  TB: 3
-  BH: 1 # Body Horizontal
-  BV: 8 # Body Vertical
-  BBR: 0 # Body Bottom Right
-  BLB: 2 # Body Left Bottom
-  BTR: 7 # Body Top Right
-  BLT: 9 # Body Left Top
+  head:
+    W: 12
+    N: 5
+    E: 6
+    S: 13
+  body:
+    W:
+      W: 1
+      N: 9
+      E: 1
+      S: 2
+    N:
+      N: 8
+      E: 7
+      S: 8
+      W: 9
+    E:
+      E: 1
+      S: 0
+      W: 1
+      N: 7
+    S:
+      S: 8
+      W: 2
+      N: 8
+      E: 0
+  tail:
+    W: 10
+    N: 3
+    E: 4
+    S: 11

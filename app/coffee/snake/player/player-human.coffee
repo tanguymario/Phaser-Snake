@@ -13,8 +13,8 @@ class PlayerHuman extends Player
   @I_GAMEPAD_UP = Phaser.Gamepad.XBOX360_DPAD_UP
   @I_GAMEPAD_DOWN = Phaser.Gamepad.XBOX360_DPAD_DOWN
 
-  constructor: (game, grid, playerConfig, gamepad = null) ->
-    super game, grid
+  constructor: (game, grid, playerTheme, playerConfig, gamepad = null) ->
+    super game, grid, playerTheme
 
     @config = playerConfig
 

@@ -54,7 +54,7 @@ class Game extends Phaser.State
     # pad4 = @game.input.gamepad.pad4
 
     # Create players
-    player1 = new PlayerHuman @game, grid, @playerConfig, pad1
+    player1 = new PlayerHuman @game, grid, @playerTheme, @playerConfig, pad1
 
     # Create the snake game logic
     @snake = new Snake @game, grid, player1

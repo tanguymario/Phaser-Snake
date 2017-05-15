@@ -59,7 +59,6 @@ class Case
     return path
 
 
-
   isImpossible: ->
     return @type.obstacle or @possibleDirections.length == 0
 
@@ -83,8 +82,10 @@ class Case
 
   getNeighbourAt: (direction) ->
     assert direction?, "direction missing"
+    directionCoords = direction.value.clone()
+    directionCoords.y *= -1
 
-    neighbourCoords = Coordinates.Add @coords, direction.value
+    neighbourCoords = Coordinates.Add @coords, directionCoords
     return @grid.getCaseAtGridCoords neighbourCoords
 
 
