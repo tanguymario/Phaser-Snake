@@ -51,9 +51,6 @@ class Player
     @headCase = rndCase
     @path = path
 
-    console.log @headCase
-    console.log @path
-
     @createSprites()
 
 
@@ -64,41 +61,45 @@ class Player
   createSprites: ->
     assert @headCase? and @path?, "Head Case / path missing"
 
-    @sprites = new Array @path.length
-
-    currentCase = @headCase
-
-    # Head
+    # Vars init
+    pathLength = @path.length
+    @sprites = new Array pathLength
     index = 0
+    currCase = @headCase
+
+    # Head sprite
     direction = @path[index]
-    @sprites[index] = @game.add.sprite currentCase.sprite.x, currentCase.sprite.y, @theme.key, PlayerSprites.head[direction]
+    sprite = @game.add.sprite currCase.sprite.x, currCase.sprite.y, @theme.key, PlayerSprites.head[direction]
+    @path[index] = { dir: direction, sprite: sprite }
 
-    bodyLength = @path.length - 1
-    for index in [1...bodyLength] by 1
+    # Body and Tail sprites
+    for index in [1...pathLength]
       direction = @path[index]
-      nextDirection = @path[index + 1]
-      currentCase = currentCase.getNeighbourAt nextDirection
+      directionOpposite = DirectionUtils.getOpposite direction
+
+      currCase = currCase.getNeighbourAt directionOpposite
+
+      if index >= pathLength - 1
+        sprite = @game.add.sprite currCase.sprite.x, currCase.sprite.y, @theme.key, PlayerSprites.tail[direction]
+        @path[index] = { dir: direction, sprite: sprite }
+      else
+        nextDirection = @path[index + 1]
+        nextDirectionOpposite = DirectionUtils.getOpposite nextDirection
+        sprite = @game.add.sprite currCase.sprite.x, currCase.sprite.y, @theme.key, PlayerSprites.body[direction][nextDirectionOpposite]
+        @path[index] = { dir: direction, sprite: sprite }
+
+    # Update sprites
+    scaleFactor = @headCase.sprite.width / @path[0].sprite.width
+    for path in @path
+      path.sprite.anchor.setTo 0.5, 0.5
+      path.sprite.scale.setTo scaleFactor
+
+
+  moveForward: ->
+    step = @headCase.sprite.width
+
+    for path in @path
       
-      spriteFrame = PlayerSprites.body[direction][nextDirection]
-      console.log currentCase
-      @sprites[index] = @game.add.sprite currentCase.sprite.x, currentCase.sprite.y, @theme.key, spriteFrame
-
-    oppositeDirection = DirectionUtils.getOpposite direction
-    currentCase = currentCase.getNeighbourAt oppositeDirection
-    direction = @path[bodyLength]
-    @sprites[bodyLength] = @game.add.sprite currentCase.sprite.x, currentCase.sprite.y, @theme.key, PlayerSprites.tail[direction]
-
-    for sprite in @sprites
-      if not sprite?
-        continue
-
-      sprite.anchor.setTo 0.5, 0.5
-
-      # scaleFactor = (currentCase.width / sprite.width) + (currentCase.height / sprite.height) / 2
-      # sprite.scale.setTo scaleFactor
-
-
-  draw: ->
 
 
   moveLeft: ->
